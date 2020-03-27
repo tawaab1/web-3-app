@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <title>New Site</title>
+</head>
+<body>
+
+</body>
+
+<h1> Hello World</h1>
+
+<a href="{{ url_for('inspiration') }}">Inspiration</a>
+
+<h2> My name is {{ name }}</h2>
+<h3> Yan Chau is sooooooooooooo cOol</h3>
+
+<div id="myDiv">myDiv</div>
+<div id="myDiv2">myDiv2</div>
+
+<p id="p0">text</p>
+<p id="p1">TIMER......</p>
+</body>
+
+<script>
+  //text override for the divs
+  var d = $("#myDiv");
+  var d1 = $("#myDiv2");
+    d.text("ROY IS SUPER COOOOOOOOOOOOOOOOOL").css("color","blue");
+    d1.text("Jommel is better than cooool").css("color","orange");
+
+//text override script for the paragraphs
+    function myFunc(name){
+    return function(age){
+        return "Your name is " + name + " and your age is " + age;
+    }
+}
+
+var nameFunc = myFunc("Aisea");
+var myString = nameFunc(20);
+var p = $("#p0");
+var p1 = $("#p1");
+p.text(myString).css("color","pink");
+p1.css("color","red");
+
+
+// no closure function  
+function noClosureError(){
+    for(var i=0;i<11;i++){
+        (function(i){
+            setTimeout(function(){
+              var t = p1.text();
+              t += i;
+                p1.text(t + ",");
+            },1000);
+        })(i);
+    }
+}
+
+noClosureError();
+</script>
+</html>
