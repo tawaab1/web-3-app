@@ -55,4 +55,8 @@ def getUsers(user_id=None):
    return users.to_json()
 
 @app.route('/users', methods=['POST'])
+def postUsers():
+   return 0
 @app.route('/users', methods=['DELETE'])
+def delUsers():
+   return 0
