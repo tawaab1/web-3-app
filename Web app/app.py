@@ -52,7 +52,7 @@ def getUsers(user_id=None):
         users = User.objects
    else:
         users = User.objects.get(id=user_id)
-    return users.to_json()
+   return users.to_json()
 
 @app.route('/users', methods=['POST'])
 @app.route('/users', methods=['DELETE'])
