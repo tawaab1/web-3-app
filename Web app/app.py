@@ -3,12 +3,16 @@ from mongoengine import *
 import os
 import csv
 connect ('DB_USERS')
+connect ('DB_COUNTRY')
 
 class User(Document):
     email = StringField(required=True)
     first_name = StringField(max_length = 50)
     last_name = StringField(max_length = 50)
 
+class Country(Document):
+  name = StringField()
+  data = DictField()
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -26,7 +30,19 @@ def index():
         r = csv.reader(f)
         d = list(r)
         for data in d:
-                print(data)
+                country = Country()
+                dict = {}
+                for key in data:
+                  if key == "country":
+
+                  else:
+                    f = filename.replace(".csv","")
+                    if f in dict:
+                      dict[f][key] = data[key]
+                      else:
+                        dict[f] = {key:data[key]}
+
+                        country.save()
     return render_template('index.html', name=namePage)
 
 @app.route('/inspiration')
@@ -40,9 +56,15 @@ if __name__ =="__main__":
      #app.run(debug=True, port=8080)
 
 
-@app.route('/getUsers', methods=['GET'])
-def getUsers():
-    users = User.objects
+@app.route('/users', methods=['GET'])
+@app.route('/users/<user_id>', methods=['GET'])
+def getUsers(user_id=None):
+   users = None
+   if user_id is None:
+        users = User.objects
+   else:
+        users = User.objects.get(id=user_id)
     return users.to_json()
 
-
+@app.route('/users', methods=['POST'])
+@app.route('/users', methods=['DELETE'])
