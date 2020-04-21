@@ -3,7 +3,6 @@ from mongoengine import *
 import os
 import csv
 connect ('DB_USERS')
-connect ('DB_COUNTRY')
 
 class User(Document):
     email = StringField(required=True)
