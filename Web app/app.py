@@ -35,8 +35,8 @@ def index():
                 for key in data:
                   if key == "country":
 
-                  else:
-                    f = filename.replace(".csv","")
+                    else:
+                      f = filename.replace(".csv","")
                     if f in dict:
                       dict[f][key] = data[key]
                       else:
