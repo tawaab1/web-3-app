@@ -37,12 +37,6 @@ def inspiration():
     return render_template('inspiration.html',name=namePage)
 
 
-
-if __name__ =="__main__":
-	 app.run(debug=True, port=80, host='0.0.0.0')
-     #app.run(debug=True, port=8080)
-
-
 @app.route('/users', methods=['GET'])
 @app.route('/users/<user_id>', methods=['GET'])
 def getUsers(user_id=None):
@@ -59,3 +53,9 @@ def postUsers():
 @app.route('/users', methods=['DELETE'])
 def delUsers():
    return 0
+
+if __name__ =="__main__":
+	 app.run(debug=True, port=80, host='0.0.0.0')
+     #app.run(debug=True, port=8080)
+
+
