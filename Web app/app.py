@@ -34,12 +34,11 @@ def index():
                 dict = {}
                 for key in data:
                   if key == "country":
-
                     else:
                       f = filename.replace(".csv","")
-                    if f in dict:
+                  if f in dict:
                       dict[f][key] = data[key]
-                      else:
+                    else:
                         dict[f] = {key:data[key]}
 
                         country.save()
