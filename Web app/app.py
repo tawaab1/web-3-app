@@ -20,7 +20,7 @@ def index():
 
 @app.route('/inspiration')
 def inspiration():
-    return render_template('inspiration.html'), 200
+    return render_template('inspiration.html', name=namePage), 200
 
 # @app.route('/addCountry')
 # def addCountry():
