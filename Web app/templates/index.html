@@ -7,42 +7,67 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <title>New Site</title>
+    <title>Country Collection</title>
 </head>
 <body>
 
-</body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
+<ul class="navbar-nav">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('index') }}">Main Page</a>
+    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('inspiration') }}">Inspiration</a>
+</li>
 
-<h1> Hello World</h1>
+<li class="nav-item">
+  <a class="nav-link" href="{{ url_for('countryData') }}">Country Data</a>
+</li>
 
-<a href="{{ url_for('inspiration') }}">Inspiration</a>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('addCountry') }}">Add Country</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('deleteCountry') }}">Delete Country</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('aboutUs') }}">About Us</a>
+</li>
+</ul>
+</nav>
+<div class="container">
+    <div class="jumbotron">
+<h1> Country Collection</h1>
 
 <h2> My name is {{ name }}</h2>
-<h3> Yan Chau is sooooooooooooo cOol</h3>
 
 <div id="myDiv">myDiv</div>
 <div id="myDiv2">myDiv2</div>
 
 <p id="p0">text</p>
 <p id="p1">TIMER......</p>
+</div>
+</div>
 </body>
 
 <script>
   //text override for the divs
   var d = $("#myDiv");
   var d1 = $("#myDiv2");
-    d.text("ROY IS SUPER COOOOOOOOOOOOOOOOOL").css("color","blue");
-    d1.text("Jommel is better than cooool").css("color","orange");
+    d.text("Blue text").css("color","blue");
+    d1.text("Orange text").css("color","orange");
 
 //text override script for the paragraphs
     function myFunc(name){
     return function(age){
-        return "Your name is " + name + " and your age is " + age;
+        return "My name is " + name + " and your age is " + age;
     }
 }
 
 var nameFunc = myFunc("Aisea");
-var myString = nameFunc(20);
+var myString = nameFunc(26);
 var p = $("#p0");
 var p1 = $("#p1");
 p.text(myString).css("color","pink");
@@ -63,5 +88,12 @@ function noClosureError(){
 }
 
 noClosureError();
+
+
+
+d3.select();
+d3.selectAll();
+d3.select('h1').style('color','red');
 </script>
+
 </html>

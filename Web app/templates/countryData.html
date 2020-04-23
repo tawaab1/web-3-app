@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Inspiration</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
@@ -16,10 +18,10 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('inspiration') }}">Inspiration</a>
         </li>
-
+        
         <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('countryData') }}">Country Data</a>
-          </li>
+          <a class="nav-link" href="{{ url_for('countryData') }}">Country Data</a>
+        </li>
         
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('addCountry') }}">Add Country</a>
@@ -28,7 +30,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('deleteCountry') }}">Delete Country</a>
         </li>
-
+        
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('aboutUs') }}">About Us</a>
         </li>
@@ -36,11 +38,10 @@
         </nav>
         <div class="container">
             <div class="jumbotron">
-    <h1>{{ name }}'s Inspirational Pages</h1>
-       <p><a href="http://dunedinorthodontics.co.nz/">Dunedin Orthodontist</a></p> 
-        <p><a href="https://studiorotate.com/">Studio Rotate</a></p>
-        <p><a href="https://mahno.com.ua/en">Mahno</a></p>
-    </div>
-    </div>
+        <h1>Country Data</h1>
+    <p>Data for countries and Tables</p>
+              </div>
+              </div>
+  
 </body>
 </html>
