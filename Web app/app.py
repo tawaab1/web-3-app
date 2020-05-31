@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request
 from mongoengine import *
 import os
 import csv
-connect ('DB_COUNTRIES')
+connect ('DB_COUNTRIES2')
 
 
 
@@ -10,10 +10,12 @@ connect ('DB_COUNTRIES')
 app = Flask(__name__)
 app.config.from_object('config')
 
-namePage= "Aisea Busa Tawake"
+
 class Country(Document):
   name = StringField()
   data = DictField()
+
+namePage= "Aisea Busa Tawake"
 @app.route('/')
 def index():
     return render_template('index.html', name=namePage), 200
@@ -35,14 +37,14 @@ def aboutUs():
     return render_template('aboutUs.html'), 200
 
 
-@app.route('/countries', methods=['GET'])
-@app.route('/countries/<country_id>', methods=['GET'])
-def getCountries(country_id=None):
+@app.route('/countries', methods=['GET','POST','PUT'])
+@app.route('/countries/<name>', methods=['GET'])
+def getCountries(name=None):
    countries = None
-   if country_id is None:
+   if name is None:
         countries = Country.objects
    else:
-        countries = Country.objects.get(id=country_id)
+        countries = Country.objects.get(name = name)
    return countries.to_json(), 200
 
 @app.route('/addCountry', methods=['POST', 'GET'])
@@ -66,42 +68,39 @@ def deleteCountry():
   else:
     return render_template('deleteCountry.html')
 
+
+
 @app.route('/countryData')
 def countryData():
   for file in os.listdir(app.config['FILES_FOLDER']):
         filename = os.fsdecode(file)
-        path = os.path.join(app.config['FILES_FOLDER'], filename)
+        path = os.path.join(app.config['FILES_FOLDER'],filename)
         f = open(path)
-        r = csv.reader(f)
+        r = csv.DictReader(f) 
         d = list(r)
         for data in d:
-         for file in os.listdir(app.config['FILES_FOLDER']):
-          filename = os.fsdecode(file)
-          path = os.path.join(app.config['FILES_FOLDER'],filename)
-          f = open(path)
-          r = csv.DictReader(f) 
-          d = list(r)
-        for data in d:
-                  print(data)
-                  country = Country() # a blank placeholder country
-                  dict = {} # a blank placeholder data dict
-        for key in data: # iterate through the header keys
-            if key == "country":
-                country = Country(name=data[key])# check if this country already exists in the db
-                  # if the country does not exist, we can use the new blank country we created above, and set the name
-                  
-                # if the country already exists, replace the blank country with the existing country from the db, and replace the blank dict with the current country's data                
-            else:
-                f = filename.replace(".csv","") # we want to trim off the ".csv" as we can't save anything with a "." as a mongodb field name
-                if f in dict: # check if this filename is already a field in the dict
-                    dict[f][key] = data[key] # if it is, just add a new subfield which is key : data[key] (value)
+            country = Country() # a blank placeholder country
+            libs = {} # a blank placeholder data dict
+            for key in data: # iterate through the header keys
+                if key == "country": # check if this country already exists in the db
+                
+                # if the country does not exist, we can use the new blank country we created above, and set the name  
+                    if Country.objects(name = data[key]).count() == 0:
+                        country['name'] = data[key]                        
+                    else:
+                        # if the country already exists, replace the blank country with the existing country from the db, and replace the blank dict with the current country's 
+                        # data      
+                        country = Country.objects.get(name = data[key])  
+                        libs = country['data']           
                 else:
-                    dict[f] = {key:data[key]} # if it is not, create a new object and assign it to the dict
-
-                    country= Country(name=data[key], data=dict[f])# add the data dict to the country
-
-                country.save()# save the country
-        return render_template('countryData.html'), 200
+                    f = filename.replace(".csv","") # we want to trim off the ".csv" as we can't save anything with a "." as a mongodb field name
+                    if f in libs: # check if this filename is already a field in the dict
+                        libs[f][key] = data[key] # if it is, just add a new subfield which is key : data[key] (value)
+                    else:
+                        libs[f] = {key:data[key]} # if it is not, create a new object and assign it to the dict
+                country['data'] = libs
+            country.save()   
+  return render_template('countryData.html'), 200
 
 if __name__ =="__main__":
 	app.run(debug=True, port=80, host='0.0.0.0')

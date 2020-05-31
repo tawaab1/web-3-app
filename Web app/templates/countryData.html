@@ -3,11 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Page Title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <title>Country Data</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+  crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/slider.css') }}">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+  crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
 </head>
 <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
@@ -36,12 +43,290 @@
         </li>
         </ul>
         </nav>
-        <div class="container">
-            <div class="jumbotron">
-        <h1>Country Data</h1>
-    <p>Data for countries and Tables</p>
+    <div id='content' class='container-fluid bg-white w-75 py-4 px-4 mt-n2'>
+      <h1 class=text-center>Life Expectancy vs PC Owned vs Food Consumed </h1>
+      <svg class='ml-1' width='1400' height="500"></svg><br>
+      <input id="slider" type="range" min="1965" max="2006" value="1965" step="1" />
+      <div class="ml-auto mr-auto w-75 text-center display-4"><label id="yearLabel">Year: 1965</label></div>
               </div>
-              </div>
-  
+
+  <script>
+    // url called in the graph builder function
+var url = "{{ url_for('getCountries') }}";
+
+//year slider function
+$(function () {
+$("#slider").on("input", function(){
+    $("#yearLabel").text("Year: " + $("#slider").val());
+});
+
+
+});
+// (function() {
+//         var url = "{{ url_for('getCountries') }}";
+//         var httpRequest;
+//         makeRequest();
+
+//         // create and send an XHR request
+//         function makeRequest() {
+//             httpRequest = new XMLHttpRequest();
+//             httpRequest.onreadystatechange = responseMethod;
+//             httpRequest.open('GET', url)
+//             httpRequest.send()
+//         }
+//         // Handle XHR Response
+//         function responseMethod () {
+//             if (httpRequest.readyState === 4) {
+//                 if (httpRequest.status === 200) {
+//                     updateUISuccess(httpRequest.responseText)
+//                     } else {
+//                         console.log("failed")
+//                     }
+//             }
+//         }
+//         // Handle XHR Success
+//         function updateUISuccess(response) {
+//             var responseObj = JSON.parse(response)
+//             console.log(response);
+//             console.log(responseObj);
+//            // a common thing is to 'wrap' some elements in a 'g' container (group)
+//     // this is like wrapping html elements in a container div
+//     var g = d3.select("svg").selectAll("g").data(responseObj);
+
+//     // create new 'g' elements for each country
+//     var en = g.enter().append("g")
+//         .attr("transform",function(d){ 
+//         return "translate("+ (Math.random() * 100) + 40 + "," + (Math.random() * 100) + 40 +")" 
+//     });
+
+//     // add a circle to each 'g'
+//     var circle = en.append("circle")
+//         .attr("r",function(d){ return Math.random() * 20 })
+//         .attr("fill",function(d,i){ return i % 2 == 0 ? "red" : "blue" });
+
+//     // add a text to each 'g'
+//     en.append("text").text(function(d){ return d.name });
+//   }
+
+//     })();
+$(function () {
+  $.get({
+    // Url is called here
+      url: url,
+      success: function (response) {
+          var $response = JSON.parse(response);
+          var slider = $("#slider");
+          var sliderValue = slider.val();
+          var circleSelected = false;
+
+          d3.selection.prototype.moveToFront = function() {  
+              return this.each(function(){
+                this.parentNode.appendChild(this);
+              });
+            };
+
+          d3.selection.prototype.moveToBack = function() {  
+                return this.each(function() { 
+                    var firstChild = this.parentNode.firstChild; 
+                    if (firstChild) { 
+                        this.parentNode.insertBefore(this, firstChild); 
+                    } 
+                });
+          };
+
+          var color = d3.scaleOrdinal()
+          .range(d3.schemeCategory20);
+
+          var margin = {top: 60, right: 90, bottom: 60, left:60};
+          var width = 1300;
+          var height = 400;
+          // implement x-axis maximum data
+          var xMax = d3.max($response, function(d) { 
+              if(d && d.data && d.data["personal_computers_per_100_people"]){
+                  var dataArray = new Array;
+                  for(var o in d.data["personal_computers_per_100_people"]) {
+                      dataArray.push(parseFloat(d.data["personal_computers_per_100_people"][o]));
+                  }
+                  return d3.max(dataArray); 
+              } else {
+                  return parseFloat(0);
+              } 
+          });
+//implement x-axis minimum data
+          var xMin = d3.min($response, function(d) { 
+              if(d && d.data && d.data["personal_computers_per_100_people"]){
+                  var dataArray = new Array;
+                  for(var o in d.data["personal_computers_per_100_people"]) {
+                      dataArray.push(parseFloat(d.data["personal_computers_per_100_people"][o]));
+                  }
+                  return d3.min(dataArray); 
+              } else {
+                  return parseFloat(0);
+              } 
+          });
+//implement y-axis maximum data
+          var yMax = d3.max($response, function(d) { 
+              if(d && d.data && d.data["life_expectancy_years"]){
+                  var dataArray = new Array;
+                  for(var o in d.data["life_expectancy_years"]) {
+                      dataArray.push(parseFloat(d.data["life_expectancy_years"][o]));
+                  }
+                  return d3.max(dataArray); 
+              } else {
+                  return parseFloat(0);
+              } 
+          });
+
+          // log checks to see the max of the x and y axis, so I can determine how can build my axis
+          console.log(xMax);
+          console.log(yMax);
+
+          var xScale = d3.scaleLinear()
+          .range([0, width])
+          .domain([xMin, xMax]);
+
+          var yScale = d3.scaleLinear()
+          .range([height, 0])
+          .domain([0, yMax]);
+// y-axis minimum is hard-coded to 0
+      
+          var xAxis = d3.axisBottom().scale(xScale).ticks(40);
+          var yAxis = d3.axisLeft().scale(yScale).ticks(20);
+
+          var svg = d3.select("svg").append("svg")
+          .attr("height", height + margin.top + margin.bottom)
+          .attr("width", width + margin.left + margin.right)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          // axis labels set up
+          svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+          .attr("class", "x axis")
+          .call(xAxis);
+          //X-axis label
+          svg.append("text")
+          .attr("class", "label")
+          .attr('x', width)
+    .attr('y', height + 35)
+          .attr("text-anchor", "end")
+          .text("Personal Computers owned (on average)");
+          //Y-axis label
+      svg.append("g")
+    .attr("transform", "translate(0,0)")
+    .attr("class", "y axis")
+          .call(yAxis);
+          
+          svg.append("text")
+          .attr("class", "label")
+          .attr("transform", "rotate(-90)")
+          .attr('x', 0)
+    .attr('y', -35)
+          .attr("text-anchor", "end")
+          .text("Average life expectancy (per year)");
+          //Lable for the circles
+          svg.append("text")
+          .text("Food consumed (kilocalories) per person")
+          .attr("x", width - 200)
+          .attr("y", -40);
+
+          //implementing the circles
+          var g = svg.selectAll("g")
+          .data($response)
+          .enter()
+          .append("g")
+          .attr("transform", function(d) {
+              if(d && d.data && d.data["life_expectancy_years"] && d.data["personal_computers_per_100_people"]) {                        
+                  var x = d.data["personal_computers_per_100_people"]["1965"] ? xScale(d.data["personal_computers_per_100_people"]["1965"]) : 0;
+                  var y = d.data["life_expectancy_years"]["1965"] ? yScale(d.data["life_expectancy_years"]["1965"]) : 0;
+                  return "translate(" +  x + "," + y + ")"
+              } else {
+                  console.log("Data circles error");
+              }
+          })
+          .on("mouseover", function(){
+              if(!circleSelected){
+                  d3.select(this)
+                  .moveToFront()
+                  .append("text")
+                  .text(function(d){return d.name})
+                  .attr("x", 0)
+                  .attr("y", 40);
+              }
+          })
+          .on("mouseout", function(){
+              if(!circleSelected){
+                  d3.select(this)
+                  .select("text")
+                  .remove();
+              }
+          });
+
+          var circles = g.append("circle")
+          .attr("r", function(d){
+              if(d && d.data && d.data["food_supply_kilocalories_per_person_and_day"]){
+                  var r = d.data["food_supply_kilocalories_per_person_and_day"]["1965"] ? d.data["food_supply_kilocalories_per_person_and_day"]["1965"]/100 : 0;
+                  return r
+              } else {
+                  console.log("data error");
+              }
+          })
+          .style("fill", function (d, i) { return color(i); }) //hover the mouse over a particular circle 
+          .on("mouseover", function(){
+              if(!circleSelected){
+                  circles.attr("opacity", 0.2);
+                  d3.select(this)
+                  .attr("opacity", 1)
+                  .moveToFront();
+              }
+          })
+          .on("mouseout", function(){// hover the mouse away from the circles returns circles to the original state
+              if(circleSelected){
+                  
+              } else {
+                  circles.attr("opacity", 1);
+              }
+          })
+          .on("click", function(){ // click a circle changes the boolean of cicleselected to true which states the name of the country which the circle represents
+              if(!circleSelected){
+                  circleSelected = true;
+                  d3.select(this)
+                  .attr("opacity", 1);
+              } else {
+                  circleSelected = false;
+              }
+          });
+
+          //when using the slider, we change how the function works 
+          slider.on("input", function(){
+              sliderValue = slider.val();
+              g.transition()
+              .duration(100)
+              .attr("transform", function(d) {
+                  if(d && d.data && d.data["life_expectancy_years"] && d.data["personal_computers_per_100_people"]) {                        
+                      var x = d.data["personal_computers_per_100_people"][sliderValue] ? xScale(d.data["personal_computers_per_100_people"][sliderValue]) : 0;
+                      var y = d.data["life_expectancy_years"][sliderValue] ? yScale(d.data["life_expectancy_years"][sliderValue]) : 0;
+                      return "translate(" +  x + "," + y + ")"
+                  } else {
+                      console.log("Data error");
+                  }
+              });
+
+              circles.transition()
+              .duration(100)
+              .attr("r", function(d){
+                  if(d && d.data && d.data["food_supply_kilocalories_per_person_and_day"]){
+                      var r = d.data["food_supply_kilocalories_per_person_and_day"][sliderValue] ? d.data["food_supply_kilocalories_per_person_and_day"][sliderValue]/100 : 0;
+                      return r
+                  } else {
+                      console.log("Data error");
+                  }
+              });
+          });
+      }
+  });
+});
+
+  </script>
 </body>
 </html>
