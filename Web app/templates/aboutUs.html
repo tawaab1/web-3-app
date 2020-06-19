@@ -39,8 +39,28 @@
         <div class="container">
             <div class="jumbotron">
         <h1>API Documentation</h1>
-    <p></p>
               </div>
+              <h3>List countries</h3>
+              <p>GET /countries - list all countries with data</p>
+              <p>GET /countries/country_name - list country with the name specified</p>
+              <p>POST /countries - list all countries with data</p>
+              <p> PUT /countries - list all countries with data</p>
+            <br/>
+
+            <h3>Optional Parameter</h3>
+            <p> country_name (string) the Country name used to specify a single country</p>
+
+            <h3>Example Usage</h3>
+            <p>GET /countries</p>
+            <p>GET /countries/Australia</p>
+            <p>POST /countries</p>
+            <p>PUT /countries</p>
+            <br/>
+              <h3>Errors</h3>
+              <p>DoesNotExit - Country matching query does not exist</p>
+
+              <p>GET countries/Ozzy</p>
+
               </div>
   </body>
   
